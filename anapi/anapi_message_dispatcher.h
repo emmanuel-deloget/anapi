@@ -33,6 +33,7 @@
 #include <vector>
 #include <android/looper.h>
 #include <android/input.h>
+#include <unistd.h>
 #include "anapi_app_window.h"
 #include "anapi_sync_primitives.h"
 #include "anapi_ticker.h"
@@ -40,6 +41,46 @@
 
 namespace anapi
 {
+
+	// this namespace contains private declaration that are used
+	// to streamline the writing of system events. The function
+	// and class below are able to handle an arbitrary number of
+	// parameters
+	namespace details
+	{
+		template <class... Args>
+		struct sender;
+
+		template <class Arg0, class... Args>
+		struct sender<Arg0, Args...>
+		{
+			// overload, for non-pointer parameters
+			static void process(int fd, Arg0 arg0, Args... args)
+			{
+				write(fd, &arg0, sizeof(Arg0));
+				sender<Args...>::process(fd, args...);
+			}
+			// overload, for pointer parameters
+			static void process(int fd, Arg0 *arg0, Args... args)
+			{
+				write(fd, arg0, sizeof(Arg0));
+				sender<Args...>::process(fd, args...);
+			}
+		};
+
+		template <>
+		struct sender<>
+		{
+			static void process(int fd) { }
+		};
+
+		template <class... Args>
+		void send_events(int fd, const system_event& se, Args... args)
+		{
+			write(fd, &se, sizeof(system_event));
+			sender<Args...>::process(fd, args...);
+		}
+	}
 
 	class message_dispatcher
 	{
@@ -81,6 +122,18 @@ namespace anapi
 		void fire_rect_changed(const system_event& se, const ARect *r);
 		void fire_idle(app& the_app);
 		bool dispatch_message(app& the_app, const app_window& w, bool& shall_quit);
+
+		template <class... Args>
+		void send_event(const system_event& se, Args... args)
+		{
+			details::send_events(m_writefd, se, args...);
+		}
+		template <class... Args>
+		void send_sync_event(const system_event& se, Args... args)
+		{
+			details::send_events(m_writefd, se, args...);
+			m_wndevent.wait_set_and_reset();
+		}
 	};
 
 }
