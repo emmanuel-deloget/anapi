@@ -29,15 +29,19 @@
 
 include $(CLEAR_VARS)
 
+ifeq ($(strip $(ANAPI_SUB_PATH)),)
+  ANAPI_SUB_PATH := .
+endif
+
 LOCAL_MODULE		:=	anapi
 LOCAL_SRC_FILES		:=	\
-	anapi/anapi_main.cpp \
-	anapi/anapi_native_activity.cpp \
-	anapi/anapi_message_dispatcher.cpp \
-	anapi/anapi_events.cpp \
-	anapi/anapi_app.cpp \
-	anapi/anapi_ticker.cpp \
-	anapi/anapi_app_activity.cpp
+	$(ANAPI_SUB_PATH)/anapi/anapi_main.cpp \
+	$(ANAPI_SUB_PATH)/anapi/anapi_native_activity.cpp \
+	$(ANAPI_SUB_PATH)/anapi/anapi_message_dispatcher.cpp \
+	$(ANAPI_SUB_PATH)/anapi/anapi_events.cpp \
+	$(ANAPI_SUB_PATH)/anapi/anapi_app.cpp \
+	$(ANAPI_SUB_PATH)/anapi/anapi_ticker.cpp \
+	$(ANAPI_SUB_PATH)/anapi/anapi_app_activity.cpp
 
 LOCAL_CFLAGS		:=	-std=c++11 -Wall -Werror
 LOCAL_CPP_FEATURES 	+=	exceptions rtti
