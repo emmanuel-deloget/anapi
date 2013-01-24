@@ -39,8 +39,8 @@ namespace anapi
 
 	enum struct system_event : unsigned int
 	{
-		system = 0x1000, start, stop, quit, pause, resume, gained_focus, lost_focus, rect_changed,
-		window = 0x2000, window_created, window_resized, window_exposed, window_destroyed
+		start, stop, quit, pause, resume, gained_focus, lost_focus, rect_changed,
+		synchronous = 0x10000, window_created, window_resized, window_exposed, window_destroyed
 	};
 
 	inline int operator&(const system_event& sea, const system_event& seb)

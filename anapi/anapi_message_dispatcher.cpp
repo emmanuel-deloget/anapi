@@ -160,10 +160,10 @@ namespace anapi
 		if (ident == MSG_ID_SYSTEM) {
 			system_event se;
 			read(fd, &se, sizeof(se));
-			if (se & system_event::system) {
-				return fire_on_sysevent(the_app, se, shall_quit);
-			} else if (se & system_event::window) {
+			if (se & system_event::synchronous) {
 				return fire_on_winevent(the_app, se);
+			} else {
+				return fire_on_sysevent(the_app, se, shall_quit);
 			}
 		} else if (ident == MSG_ID_INPUT) {
 			scoped_lock lock(m_mutex);
