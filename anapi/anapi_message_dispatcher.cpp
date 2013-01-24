@@ -188,12 +188,6 @@ namespace anapi
 		return false;
 	}
 
-	void message_dispatcher::fire_rect_changed(const system_event& se, const ARect *r)
-	{
-		write(m_writefd, &se, sizeof(se));
-		write(m_writefd, r, sizeof(ARect));
-	}
-
 	void message_dispatcher::fire_idle(app& the_app)
 	{
 		if (!m_ticker.paused() && m_has_focus) {

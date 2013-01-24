@@ -118,7 +118,6 @@ namespace anapi
 		void prepare();
 		void setup_queue(AInputQueue *q);
 		void reset_queue();
-		void fire_rect_changed(const system_event& se, const ARect *r);
 		void fire_idle(app& the_app);
 		bool dispatch_message(app& the_app, const app_window& w, bool& shall_quit);
 
