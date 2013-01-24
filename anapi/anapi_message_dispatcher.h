@@ -38,6 +38,7 @@
 #include "anapi_sync_primitives.h"
 #include "anapi_ticker.h"
 #include "anapi_app.h"
+#include "anapi_log.h"
 
 namespace anapi
 {
@@ -117,11 +118,21 @@ namespace anapi
 		template <class... Args>
 		void send_event(const system_event& se, Args... args)
 		{
+			if (se & system_event::synchronous) {
+				LOGE("%s:%d> sending a synchronous event with %s\n",
+						__FILE__, __LINE__, __FUNCTION__);
+				return;
+			}
 			details::send_events(m_writefd, se, args...);
 		}
 		template <class... Args>
 		void send_sync_event(const system_event& se, Args... args)
 		{
+			if ((se & system_event::synchronous) == 0) {
+				LOGE("%s:%d> sending an asynchronous event with %s\n",
+						__FILE__, __LINE__, __FUNCTION__);
+				return;
+			}
 			details::send_events(m_writefd, se, args...);
 			m_syncevent.wait_set_and_reset();
 		}
