@@ -202,7 +202,7 @@ namespace anapi
 		m_started.wait_set();
 	}
 
-	bool native_activity::dispatch_message(app& the_app, bool& shall_quit)
+	event_result native_activity::dispatch_message(app& the_app, bool& shall_quit)
 	{
 		return m_dispatcher.dispatch_message(the_app, shall_quit);
 	}

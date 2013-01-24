@@ -74,7 +74,13 @@ namespace anapi
 			write(fd, &se, sizeof(system_event));
 			sender<Args...>::process(fd, args...);
 		}
+
 	}
+
+	enum struct event_result
+	{
+		unhandled, handled, shall_quit
+	};
 
 	class message_dispatcher
 	{
@@ -101,19 +107,19 @@ namespace anapi
 	private:
 		void reset_queue_locked();
 		void attach_queue(AInputQueue *q);
-		bool fire_on_asyncevent(app& the_app, const system_event& sysevent, bool& shall_quit);
-		bool fire_on_syncevent(app& the_app, const system_event& sysevent);
-		bool fire_on_key(app& the_app, AInputEvent *ie);
-		bool fire_on_motion(app& the_app, AInputEvent *ie);
-		bool fire_on_dpad(app& the_app, AInputEvent *ie);
-		bool fire_on_external(app& the_app, AInputEvent *ie);
+		event_result fire_on_asyncevent(app& the_app, const system_event& sysevent, bool& shall_quit);
+		event_result fire_on_syncevent(app& the_app, const system_event& sysevent);
+		event_result fire_on_key(app& the_app, AInputEvent *ie);
+		event_result fire_on_motion(app& the_app, AInputEvent *ie);
+		event_result fire_on_dpad(app& the_app, AInputEvent *ie);
+		event_result fire_on_external(app& the_app, AInputEvent *ie);
 
 	public:
 		void prepare();
 		void setup_queue(AInputQueue *q);
 		void reset_queue();
 		void fire_idle(app& the_app);
-		bool dispatch_message(app& the_app, bool& shall_quit);
+		event_result dispatch_message(app& the_app, bool& shall_quit);
 
 		template <class... Args>
 		void send_event(const system_event& se, Args... args)

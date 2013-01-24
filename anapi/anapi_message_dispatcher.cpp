@@ -142,14 +142,14 @@ namespace anapi
 		reset_queue_locked();
 	}
 
-	bool message_dispatcher::dispatch_message(app& the_app, bool& shall_quit)
+	event_result message_dispatcher::dispatch_message(app& the_app, bool& shall_quit)
 	{
 		shall_quit = false;
 
 		if (true) {
 			scoped_lock lock(m_mutex);
 			if (!m_iqueue || !m_looper)
-				return false;
+				return event_result::unhandled;
 		}
 
 		int fd, events, ident;
@@ -169,24 +169,24 @@ namespace anapi
 			scoped_lock lock(m_mutex);
 			AInputEvent *ie = NULL;
 			if (AInputQueue_getEvent(m_iqueue, &ie) < 0)
-				return false;
+				return event_result::unhandled;
 			if (AInputQueue_preDispatchEvent(m_iqueue, ie))
-				return true;
-			bool handled;
+				return event_result::handled;
+			event_result result;
 			if (is_key_message(ie)) {
-				handled = fire_on_key(the_app, ie);
+				result = fire_on_key(the_app, ie);
 			} else if (is_motion_message(ie)) {
-				handled = fire_on_motion(the_app, ie);
+				result = fire_on_motion(the_app, ie);
 			} else if (is_dpad_message(ie)) {
-				handled = fire_on_dpad(the_app, ie);
+				result = fire_on_dpad(the_app, ie);
 			} else if (is_external_event(ie)) {
-				handled = fire_on_external(the_app, ie);
+				result = fire_on_external(the_app, ie);
 			}
-			AInputQueue_finishEvent(m_iqueue, ie, handled ? 1 : 0);
-			return handled;
+			AInputQueue_finishEvent(m_iqueue, ie, result == event_result::handled ? 1 : 0);
+			return result;
 		}
 
-		return false;
+		return event_result::unhandled;
 	}
 
 	void message_dispatcher::fire_idle(app& the_app)
@@ -197,46 +197,46 @@ namespace anapi
 		}
 	}
 
-	bool message_dispatcher::fire_on_asyncevent(app& the_app, const system_event& se, bool& shall_quit)
+	event_result message_dispatcher::fire_on_asyncevent(app& the_app, const system_event& se, bool& shall_quit)
 	{
 		LOGI("%s:%d> firing %s\n", __FILE__, __LINE__, get_sys_event_name(se).c_str());
 
 		switch (se) {
 		case system_event::stop:
-			return the_app.on_stop();
+			return the_app.on_stop() ? event_result::handled : event_result::unhandled;
 		case system_event::start:
-			return the_app.on_start();
+			return the_app.on_start() ? event_result::handled : event_result::unhandled;
 		case system_event::gained_focus:
 			m_has_focus = true;
-			return the_app.on_gained_focus();
+			return the_app.on_gained_focus() ? event_result::handled : event_result::unhandled;
 		case system_event::lost_focus:
 			m_has_focus = false;
-			return the_app.on_lost_focus();
+			return the_app.on_lost_focus() ? event_result::handled : event_result::unhandled;
 		case system_event::pause: {
 				bool h = the_app.on_pause();
 				m_ticker.pause();
-				return h;
+				return h ? event_result::handled : event_result::unhandled;
 			}
 		case system_event::resume:
 			m_ticker.resume();
-			return the_app.on_resume();
+			return the_app.on_resume() ? event_result::handled : event_result::unhandled;
 		case system_event::quit: {
-				bool handled = the_app.on_quit();
+				the_app.on_quit();
 				shall_quit = true;
-				return handled;
+				return event_result::shall_quit;
 			}
 		case system_event::rect_changed: {
 				rectangle r;
 				read(m_readfd, &r, sizeof(r));
-				return the_app.on_rect_changed(r);
+				return the_app.on_rect_changed(r) ? event_result::handled : event_result::unhandled;
 			}
 		default:
 			break;
 		}
-		return false;
+		return event_result::unhandled;
 	}
 
-	bool message_dispatcher::fire_on_syncevent(app& the_app, const system_event& se)
+	event_result message_dispatcher::fire_on_syncevent(app& the_app, const system_event& se)
 	{
 		ANativeWindow *wnd;
 
@@ -263,66 +263,83 @@ namespace anapi
 			break;
 		}
 		m_syncevent.set();
-		return h;
+		return h ? event_result::handled : event_result::unhandled;
 	}
 
-	bool message_dispatcher::fire_on_key(app& the_app, AInputEvent *ie)
+	event_result message_dispatcher::fire_on_key(app& the_app, AInputEvent *ie)
 	{
-		return the_app.on_key(key_event(ie));
+		if (the_app.on_key(key_event(ie)))
+			return event_result::handled;
+		return event_result::unhandled;
 	}
 
-	bool message_dispatcher::fire_on_motion(app& the_app, AInputEvent *ie)
+	event_result message_dispatcher::fire_on_motion(app& the_app, AInputEvent *ie)
 	{
-		return the_app.on_motion(motion_event(ie));
+		if (the_app.on_motion(motion_event(ie)))
+			return event_result::handled;
+		return event_result::unhandled;
 	}
 
-	bool message_dispatcher::fire_on_dpad(app& the_app, AInputEvent *ie)
+	event_result message_dispatcher::fire_on_dpad(app& the_app, AInputEvent *ie)
 	{
 		int kcode = AKeyEvent_getKeyCode(ie);
 		int type = AKeyEvent_getAction(ie);
+		bool h = false;
 
 		switch (kcode) {
 		case AKEYCODE_DPAD_UP:
-			return the_app.on_dpad_up(type == AKEY_EVENT_ACTION_DOWN ? button_event::down : button_event::up);
+			h = the_app.on_dpad_up(type == AKEY_EVENT_ACTION_DOWN ? button_event::down : button_event::up);
+			break;
 		case AKEYCODE_DPAD_DOWN:
-			return the_app.on_dpad_down(type == AKEY_EVENT_ACTION_DOWN ? button_event::down : button_event::up);
+			h = the_app.on_dpad_down(type == AKEY_EVENT_ACTION_DOWN ? button_event::down : button_event::up);
+			break;
 		case AKEYCODE_DPAD_LEFT:
-			return the_app.on_dpad_left(type == AKEY_EVENT_ACTION_DOWN ? button_event::down : button_event::up);
+			h = the_app.on_dpad_left(type == AKEY_EVENT_ACTION_DOWN ? button_event::down : button_event::up);
+			break;
 		case AKEYCODE_DPAD_RIGHT:
-			return the_app.on_dpad_right(type == AKEY_EVENT_ACTION_DOWN ? button_event::down : button_event::up);
+			h = the_app.on_dpad_right(type == AKEY_EVENT_ACTION_DOWN ? button_event::down : button_event::up);
+			break;
 		case AKEYCODE_DPAD_CENTER:
-			return the_app.on_dpad_center(type == AKEY_EVENT_ACTION_DOWN ? button_event::down : button_event::up);
+			h = the_app.on_dpad_center(type == AKEY_EVENT_ACTION_DOWN ? button_event::down : button_event::up);
+			break;
 		default:
 			break;
 		}
 
-		LOGE("%s:%d> unknown dpad keycode %d\n", __FILE__, __LINE__, kcode);
-		return false;
+		return h ? event_result::handled : event_result::unhandled;
 	}
 
-	bool message_dispatcher::fire_on_external(app& the_app, AInputEvent *ie)
+	event_result message_dispatcher::fire_on_external(app& the_app, AInputEvent *ie)
 	{
 		int kcode = AKeyEvent_getKeyCode(ie);
 
 		if (kcode >= AKEYCODE_DPAD_UP && kcode <= AKEYCODE_DPAD_CENTER) {
 			return fire_on_dpad(the_app, ie);
 		} if (kcode == AKEYCODE_CALL) {
-			return the_app.on_call();
+			if (the_app.on_call())
+				return event_result::handled;
+			return event_result::unhandled;
 		} else if (kcode == AKEYCODE_ENDCALL) {
-			return the_app.on_endcall();
+			if (the_app.on_endcall())
+				return event_result::handled;
+			return event_result::unhandled;
 		} else if (kcode == AKEYCODE_VOLUME_UP || kcode == AKEYCODE_VOLUME_DOWN) {
-			return the_app.on_volume_change(kcode == AKEYCODE_VOLUME_UP ? 1 : -1);
+			if (the_app.on_volume_change(kcode == AKEYCODE_VOLUME_UP ? 1 : -1))
+				return event_result::handled;
+			return event_result::unhandled;
 		} else if (kcode == AKEYCODE_MENU) {
 			int action = AKeyEvent_getAction(ie);
 			button_event be = button_event::down;
 			if (action != AKEY_EVENT_ACTION_DOWN)
 				be = button_event::up;
-			return the_app.on_menu(be);
+			if (the_app.on_menu(be))
+				return event_result::handled;
+			return event_result::unhandled;
 		}
 
 		// I should handle some other "keys", but I'm a bit lazy to write the code...
 		LOGE("%s:%d> unknown external function %d\n", __FILE__, __LINE__, kcode);
-		return false;
+		return event_result::unhandled;
 	}
 }
 

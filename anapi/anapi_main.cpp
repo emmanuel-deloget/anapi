@@ -57,13 +57,13 @@ namespace anapi
 
 				// process messages
 				do {
-					bool shall_quit = false;
-					bool handled = a->dispatch_message(the_app, shall_quit);
-					if (shall_quit) {
+					bool shall_quit;
+					event_result result = a->dispatch_message(the_app, shall_quit);
+					if (result == event_result::shall_quit) {
 						break;
-					}
-					if (handled)
+					} else if (result == event_result::handled) {
 						continue;
+					}
 					a->dispatch_idle(the_app);
 				} while (true);
 			} catch (std::exception& e) {
