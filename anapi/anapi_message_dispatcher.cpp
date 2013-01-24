@@ -30,6 +30,7 @@
 #include <stdexcept>
 #include <unistd.h>
 #include <android/looper.h>
+#include <android/native_window.h>
 
 #include "anapi_message_dispatcher.h"
 #include "anapi_events.h"
@@ -238,23 +239,27 @@ namespace anapi
 
 	bool message_dispatcher::fire_on_winevent(app& the_app, const system_event& se, const app_window& w)
 	{
-		LOGI("%s:%d> firing window event %s\n", __FILE__, __LINE__,
-				get_sys_event_name(se).c_str());
+		ANativeWindow *wnd;
+
+		read(m_readfd, &wnd, sizeof(wnd));
+
+		LOGI("%s:%d> firing window event %s, wnd = %p\n", __FILE__, __LINE__,
+				get_sys_event_name(se).c_str(), wnd);
 
 		bool h = false;
 
 		switch (se) {
 		case system_event::window_created:
-			h = the_app.on_window_created(w);
+			h = the_app.on_window_created(app_window(wnd));
 			break;
 		case system_event::window_destroyed:
-			h = the_app.on_window_destroyed(w);
+			h = the_app.on_window_destroyed(app_window(wnd));
 			break;
 		case system_event::window_exposed:
-			h = the_app.on_window_exposed(w);
+			h = the_app.on_window_exposed(app_window(wnd));
 			break;
 		case system_event::window_resized:
-			h = the_app.on_window_resized(w);
+			h = the_app.on_window_resized(app_window(wnd));
 			break;
 		default:
 			break;

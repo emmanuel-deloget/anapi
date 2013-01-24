@@ -321,7 +321,7 @@ namespace anapi
 			LOGE("%s:%d> on_window_created while m_window != NULL\n", __FILE__, __LINE__);
 		}
 		m_window = window;
-		m_dispatcher.send_sync_event(system_event::window_created);
+		m_dispatcher.send_sync_event(system_event::window_created, window);
 	}
 
 	void native_activity::on_window_resized(ANativeWindow* window)
@@ -333,7 +333,7 @@ namespace anapi
 					__FILE__, __LINE__, m_window, window);
 			m_window = window;
 		}
-		m_dispatcher.send_sync_event(system_event::window_resized);
+		m_dispatcher.send_sync_event(system_event::window_resized, window);
 	}
 
 	void native_activity::on_window_redraw_needed(ANativeWindow* window)
@@ -345,7 +345,7 @@ namespace anapi
 					__FILE__, __LINE__, m_window, window);
 			m_window = window;
 		}
-		m_dispatcher.send_sync_event(system_event::window_exposed);
+		m_dispatcher.send_sync_event(system_event::window_exposed, window);
 	}
 
 	void native_activity::on_window_destroyed(ANativeWindow* window)
@@ -357,7 +357,7 @@ namespace anapi
 					__FILE__, __LINE__, m_window, window);
 			m_window = window;
 		}
-		m_dispatcher.send_sync_event(system_event::window_destroyed);
+		m_dispatcher.send_sync_event(system_event::window_destroyed, window);
 		m_window = NULL;
 	}
 
