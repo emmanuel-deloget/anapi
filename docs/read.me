@@ -25,6 +25,9 @@ following lines to your Android.mk file:
 ------------------------------------------------------------<Android.mk>
 LOCAL_PATH := $(call my-dir)
 
+### THESE DECLARATION IS OPTIONAL
+# ANAPI_SUB_PATH := somedir/
+# ANAPI_IDIR := -I $(LOCAL_PATH)/$(ANAPI_SUB_PATH)
 ### ADD THE FOLLOWING LINE
 include $(LOCAL_PATH)/anapi/Anapi.mk
 
@@ -37,7 +40,7 @@ LOCAL_SRC_FILES		:= $(YOUR_SOURCE_FILES)
 LOCAL_STATIC_LIBRARIES	:= anapi
 
 ### USE THESE CFLAGS, LDFLAGS, LDLIBS AND CPP_FEATURES
-LOCAL_CFLAGS		:= -std=c++11
+LOCAL_CFLAGS		:= -std=c++11 $(ANAPI_IDIR)
 LOCAL_LDLIBS		:= -llog -landroid
 LOCAL_LDFLAGS		:= -u ANativeActivity_onCreate
 LOCAL_CPP_FEATURES	+= exceptions rtti
@@ -55,6 +58,21 @@ build).
 The LOCAL_LDFLAGS line is equally important: without this line, the
 anapi++ static library will NOT be correctly linked to your shared
 library, meaning that your native activity will lack its entry point.
+
+ANAPI_SUB_PATH can be set to a non-empty value if the source code of
+the anapi++ library is not located directly in the anapi/ directory.
+In the following configuration
+
+  project/
+    jni/
+      somedir/
+        anapi/
+        docs/
+        samples/
+
+the ANAPI_SUB_PATH variable is to be set to somedir/ (note that it also
+changes the path of the include files, meaning that you shall also add
+a -I option to the CFLAGS as shown above).
 
 Your Application.mk file must be modified (if you don't have one, it
 must be created)in order to have this content:
