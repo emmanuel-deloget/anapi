@@ -161,9 +161,9 @@ namespace anapi
 			system_event se;
 			read(fd, &se, sizeof(se));
 			if (se & system_event::synchronous) {
-				return fire_on_winevent(the_app, se);
+				return fire_on_syncevent(the_app, se);
 			} else {
-				return fire_on_sysevent(the_app, se, shall_quit);
+				return fire_on_asyncevent(the_app, se, shall_quit);
 			}
 		} else if (ident == MSG_ID_INPUT) {
 			scoped_lock lock(m_mutex);
@@ -197,7 +197,7 @@ namespace anapi
 		}
 	}
 
-	bool message_dispatcher::fire_on_sysevent(app& the_app, const system_event& se, bool& shall_quit)
+	bool message_dispatcher::fire_on_asyncevent(app& the_app, const system_event& se, bool& shall_quit)
 	{
 		LOGI("%s:%d> firing %s\n", __FILE__, __LINE__, get_sys_event_name(se).c_str());
 
@@ -236,7 +236,7 @@ namespace anapi
 		return false;
 	}
 
-	bool message_dispatcher::fire_on_winevent(app& the_app, const system_event& se)
+	bool message_dispatcher::fire_on_syncevent(app& the_app, const system_event& se)
 	{
 		ANativeWindow *wnd;
 

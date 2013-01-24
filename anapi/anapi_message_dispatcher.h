@@ -101,8 +101,8 @@ namespace anapi
 	private:
 		void reset_queue_locked();
 		void attach_queue(AInputQueue *q);
-		bool fire_on_sysevent(app& the_app, const system_event& sysevent, bool& shall_quit);
-		bool fire_on_winevent(app& the_app, const system_event& sysevent);
+		bool fire_on_asyncevent(app& the_app, const system_event& sysevent, bool& shall_quit);
+		bool fire_on_syncevent(app& the_app, const system_event& sysevent);
 		bool fire_on_key(app& the_app, AInputEvent *ie);
 		bool fire_on_motion(app& the_app, AInputEvent *ie);
 		bool fire_on_dpad(app& the_app, AInputEvent *ie);
