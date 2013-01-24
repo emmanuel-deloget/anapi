@@ -199,8 +199,7 @@ namespace anapi
 
 	bool message_dispatcher::fire_on_sysevent(app& the_app, const system_event& se, bool& shall_quit)
 	{
-		LOGI("%s:%d> firing system event %s\n", __FILE__, __LINE__,
-				get_sys_event_name(se).c_str());
+		LOGI("%s:%d> firing %s\n", __FILE__, __LINE__, get_sys_event_name(se).c_str());
 
 		switch (se) {
 		case system_event::stop:
@@ -243,8 +242,7 @@ namespace anapi
 
 		read(m_readfd, &wnd, sizeof(wnd));
 
-		LOGI("%s:%d> firing window event %s, wnd = %p\n", __FILE__, __LINE__,
-				get_sys_event_name(se).c_str(), wnd);
+		LOGI("%s:%d> firing %s, wnd = %p\n", __FILE__, __LINE__, get_sys_event_name(se).c_str(), wnd);
 
 		bool h = false;
 
