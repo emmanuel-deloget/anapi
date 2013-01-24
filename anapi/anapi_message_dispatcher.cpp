@@ -188,15 +188,6 @@ namespace anapi
 		return false;
 	}
 
-	void message_dispatcher::fire_sys_event(const system_event& se)
-	{
-		write(m_writefd, &se, sizeof(se));
-		if (se & system_event::window) {
-			// we must wait for the event to be handled
-			m_wndevent.wait_set_and_reset();
-		}
-	}
-
 	void message_dispatcher::fire_rect_changed(const system_event& se, const ARect *r)
 	{
 		write(m_writefd, &se, sizeof(se));
