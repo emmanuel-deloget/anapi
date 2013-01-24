@@ -264,7 +264,7 @@ namespace anapi
 	void native_activity::on_content_rect_changed(const ARect *r)
 	{
 		LOGV("%s:%d> in %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-		m_dispatcher.fire_rect_changed(system_event::rect_changed, r);
+		m_dispatcher.send_event(system_event::rect_changed, *r);
 	}
 
 	void *native_activity::on_save_instance_state(size_t *size)
@@ -276,40 +276,40 @@ namespace anapi
 	void native_activity::on_start()
 	{
 		LOGV("%s:%d> in %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-		m_dispatcher.fire_sys_event(system_event::start);
+		m_dispatcher.send_event(system_event::start);
 	}
 
 	void native_activity::on_stop()
 	{
 		LOGV("%s:%d> in %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-		m_dispatcher.fire_sys_event(system_event::stop);
+		m_dispatcher.send_event(system_event::stop);
 	}
 
 	void native_activity::on_resume()
 	{
 		LOGV("%s:%d> in %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-		m_dispatcher.fire_sys_event(system_event::resume);
+		m_dispatcher.send_event(system_event::resume);
 	}
 
 	void native_activity::on_pause()
 	{
 		LOGV("%s:%d> in %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-		m_dispatcher.fire_sys_event(system_event::pause);
+		m_dispatcher.send_event(system_event::pause);
 	}
 
 	void native_activity::on_destroy()
 	{
 		LOGV("%s:%d> in %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-		m_dispatcher.fire_sys_event(system_event::quit);
+		m_dispatcher.send_event(system_event::quit);
 	}
 
 	void native_activity::on_window_focus_changed(int has_focus)
 	{
 		LOGV("%s:%d> in %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 		if (has_focus) {
-			m_dispatcher.fire_sys_event(system_event::gained_focus);
+			m_dispatcher.send_event(system_event::gained_focus);
 		} else {
-			m_dispatcher.fire_sys_event(system_event::lost_focus);
+			m_dispatcher.send_event(system_event::lost_focus);
 		}
 	}
 
@@ -321,7 +321,7 @@ namespace anapi
 			LOGE("%s:%d> on_window_created while m_window != NULL\n", __FILE__, __LINE__);
 		}
 		m_window = window;
-		m_dispatcher.fire_sys_event(system_event::window_created);
+		m_dispatcher.send_sync_event(system_event::window_created);
 	}
 
 	void native_activity::on_window_resized(ANativeWindow* window)
@@ -333,7 +333,7 @@ namespace anapi
 					__FILE__, __LINE__, m_window, window);
 			m_window = window;
 		}
-		m_dispatcher.fire_sys_event(system_event::window_resized);
+		m_dispatcher.send_sync_event(system_event::window_resized);
 	}
 
 	void native_activity::on_window_redraw_needed(ANativeWindow* window)
@@ -345,7 +345,7 @@ namespace anapi
 					__FILE__, __LINE__, m_window, window);
 			m_window = window;
 		}
-		m_dispatcher.fire_sys_event(system_event::window_exposed);
+		m_dispatcher.send_sync_event(system_event::window_exposed);
 	}
 
 	void native_activity::on_window_destroyed(ANativeWindow* window)
@@ -357,7 +357,7 @@ namespace anapi
 					__FILE__, __LINE__, m_window, window);
 			m_window = window;
 		}
-		m_dispatcher.fire_sys_event(system_event::window_destroyed);
+		m_dispatcher.send_sync_event(system_event::window_destroyed);
 		m_window = NULL;
 	}
 
