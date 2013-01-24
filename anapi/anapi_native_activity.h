@@ -84,7 +84,7 @@ namespace anapi
 
 		void started();
 		void wait_started();
-		event_result dispatch_message(app& the_app, bool& shall_quit);
+		event_result dispatch_message(app& the_app);
 		void dispatch_idle(app& the_app);
 
 		ANativeActivity *ptr()

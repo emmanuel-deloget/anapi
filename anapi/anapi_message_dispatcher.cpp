@@ -142,10 +142,8 @@ namespace anapi
 		reset_queue_locked();
 	}
 
-	event_result message_dispatcher::dispatch_message(app& the_app, bool& shall_quit)
+	event_result message_dispatcher::dispatch_message(app& the_app)
 	{
-		shall_quit = false;
-
 		if (true) {
 			scoped_lock lock(m_mutex);
 			if (!m_iqueue || !m_looper)
@@ -163,7 +161,7 @@ namespace anapi
 			if (se & system_event::synchronous) {
 				return fire_on_syncevent(the_app, se);
 			} else {
-				return fire_on_asyncevent(the_app, se, shall_quit);
+				return fire_on_asyncevent(the_app, se);
 			}
 		} else if (ident == MSG_ID_INPUT) {
 			scoped_lock lock(m_mutex);
@@ -197,7 +195,7 @@ namespace anapi
 		}
 	}
 
-	event_result message_dispatcher::fire_on_asyncevent(app& the_app, const system_event& se, bool& shall_quit)
+	event_result message_dispatcher::fire_on_asyncevent(app& the_app, const system_event& se)
 	{
 		LOGI("%s:%d> firing %s\n", __FILE__, __LINE__, get_sys_event_name(se).c_str());
 
@@ -222,7 +220,6 @@ namespace anapi
 			return the_app.on_resume() ? event_result::handled : event_result::unhandled;
 		case system_event::quit: {
 				the_app.on_quit();
-				shall_quit = true;
 				return event_result::shall_quit;
 			}
 		case system_event::rect_changed: {

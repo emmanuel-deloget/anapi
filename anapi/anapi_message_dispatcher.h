@@ -107,7 +107,7 @@ namespace anapi
 	private:
 		void reset_queue_locked();
 		void attach_queue(AInputQueue *q);
-		event_result fire_on_asyncevent(app& the_app, const system_event& sysevent, bool& shall_quit);
+		event_result fire_on_asyncevent(app& the_app, const system_event& sysevent);
 		event_result fire_on_syncevent(app& the_app, const system_event& sysevent);
 		event_result fire_on_key(app& the_app, AInputEvent *ie);
 		event_result fire_on_motion(app& the_app, AInputEvent *ie);
@@ -119,7 +119,7 @@ namespace anapi
 		void setup_queue(AInputQueue *q);
 		void reset_queue();
 		void fire_idle(app& the_app);
-		event_result dispatch_message(app& the_app, bool& shall_quit);
+		event_result dispatch_message(app& the_app);
 
 		template <class... Args>
 		void send_event(const system_event& se, Args... args)

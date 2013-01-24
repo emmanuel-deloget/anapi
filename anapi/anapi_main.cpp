@@ -57,8 +57,7 @@ namespace anapi
 
 				// process messages
 				do {
-					bool shall_quit;
-					event_result result = a->dispatch_message(the_app, shall_quit);
+					event_result result = a->dispatch_message(the_app);
 					if (result == event_result::shall_quit) {
 						break;
 					} else if (result == event_result::handled) {
