@@ -189,8 +189,7 @@ namespace anapi
 	native_activity::~native_activity()
 	{
 		m_activity->instance = NULL;
-		// for unknown reason, this provoke a SIGSEGV on the activity restart
-		// reset_callbacks();
+		reset_callbacks();
 		LOGV("%s:%d> native_activity(%p) is destroyed\n", __FILE__, __LINE__, this);
 	}
 
