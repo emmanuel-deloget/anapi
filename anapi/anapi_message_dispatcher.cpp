@@ -262,7 +262,7 @@ namespace anapi
 		default:
 			break;
 		}
-		m_wndevent.set();
+		m_syncevent.set();
 		return h;
 	}
 

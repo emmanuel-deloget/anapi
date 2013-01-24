@@ -84,7 +84,7 @@ namespace anapi
 		ALooper *m_looper;
 		AInputQueue *m_iqueue;
 		ticker m_ticker;
-		condition m_wndevent;
+		condition m_syncevent;
 		bool m_has_focus;
 
 	public:
@@ -123,7 +123,7 @@ namespace anapi
 		void send_sync_event(const system_event& se, Args... args)
 		{
 			details::send_events(m_writefd, se, args...);
-			m_wndevent.wait_set_and_reset();
+			m_syncevent.wait_set_and_reset();
 		}
 	};
 
