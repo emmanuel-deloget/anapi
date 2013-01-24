@@ -317,7 +317,6 @@ namespace anapi
 	{
 		LOGV("%s:%d> in %s(w=%p), m_window=%p\n", __FILE__, __LINE__,
 				__PRETTY_FUNCTION__, window, m_window);
-		scoped_lock lock(m_win_mut);
 		if (window && m_window) {
 			LOGE("%s:%d> on_window_created while m_window != NULL\n", __FILE__, __LINE__);
 		}
@@ -329,7 +328,6 @@ namespace anapi
 	{
 		LOGV("%s:%d> in %s(w=%p), m_window=%p\n", __FILE__, __LINE__,
 				__PRETTY_FUNCTION__, window, m_window);
-		scoped_lock lock(m_win_mut);
 		if (m_window != window) {
 			LOGE("%s:%d> incoherent window object from message (%p!=%p)",
 					__FILE__, __LINE__, m_window, window);
@@ -342,7 +340,6 @@ namespace anapi
 	{
 		LOGV("%s:%d> in %s(w=%p), m_window=%p\n", __FILE__, __LINE__,
 				__PRETTY_FUNCTION__, window, m_window);
-		scoped_lock lock(m_win_mut);
 		if (m_window != window) {
 			LOGE("%s:%d> incoherent window object from message (%p!=%p)",
 					__FILE__, __LINE__, m_window, window);
@@ -355,7 +352,6 @@ namespace anapi
 	{
 		LOGV("%s:%d> in %s(w=%p), m_window=%p\n", __FILE__, __LINE__,
 				__PRETTY_FUNCTION__, window, m_window);
-		scoped_lock lock(m_win_mut);
 		if (m_window != window) {
 			LOGE("%s:%d> incoherent window object from message (%p!=%p)",
 					__FILE__, __LINE__, m_window, window);

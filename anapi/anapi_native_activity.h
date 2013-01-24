@@ -48,7 +48,6 @@ namespace anapi
 		message_dispatcher m_dispatcher;
 		condition m_started;
 		ANativeWindow *m_window;
-		mutex m_win_mut;
 
 	public:
 		native_activity(ANativeActivity *a, const instance_state& istate);
