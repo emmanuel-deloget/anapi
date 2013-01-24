@@ -142,7 +142,7 @@ namespace anapi
 		reset_queue_locked();
 	}
 
-	bool message_dispatcher::dispatch_message(app& the_app, const app_window& w, bool& shall_quit)
+	bool message_dispatcher::dispatch_message(app& the_app, bool& shall_quit)
 	{
 		shall_quit = false;
 
@@ -163,7 +163,7 @@ namespace anapi
 			if (se & system_event::system) {
 				return fire_on_sysevent(the_app, se, shall_quit);
 			} else if (se & system_event::window) {
-				return fire_on_winevent(the_app, se, w);
+				return fire_on_winevent(the_app, se);
 			}
 		} else if (ident == MSG_ID_INPUT) {
 			scoped_lock lock(m_mutex);
@@ -237,7 +237,7 @@ namespace anapi
 		return false;
 	}
 
-	bool message_dispatcher::fire_on_winevent(app& the_app, const system_event& se, const app_window& w)
+	bool message_dispatcher::fire_on_winevent(app& the_app, const system_event& se)
 	{
 		ANativeWindow *wnd;
 

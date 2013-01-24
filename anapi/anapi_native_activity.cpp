@@ -180,7 +180,6 @@ namespace anapi
 	: m_activity(a)
 	, m_istate(istate)
 	, m_dispatcher()
-	, m_window(NULL)
 	{
 		LOGV("%s:%d> native_activity(%p) is created\n", __FILE__, __LINE__, this);
 		setup_callbacks();
@@ -205,7 +204,7 @@ namespace anapi
 
 	bool native_activity::dispatch_message(app& the_app, bool& shall_quit)
 	{
-		return m_dispatcher.dispatch_message(the_app, app_window(m_window), shall_quit);
+		return m_dispatcher.dispatch_message(the_app, shall_quit);
 	}
 
 	void native_activity::prepare_msg_dispatcher()
@@ -315,50 +314,30 @@ namespace anapi
 
 	void native_activity::on_window_created(ANativeWindow* window)
 	{
-		LOGV("%s:%d> in %s(w=%p), m_window=%p\n", __FILE__, __LINE__,
-				__PRETTY_FUNCTION__, window, m_window);
-		if (window && m_window) {
-			LOGE("%s:%d> on_window_created while m_window != NULL\n", __FILE__, __LINE__);
-		}
-		m_window = window;
+		LOGV("%s:%d> in %s(window=%p)\n", __FILE__, __LINE__,
+				__FUNCTION__, window);
 		m_dispatcher.send_sync_event(system_event::window_created, window);
 	}
 
 	void native_activity::on_window_resized(ANativeWindow* window)
 	{
-		LOGV("%s:%d> in %s(w=%p), m_window=%p\n", __FILE__, __LINE__,
-				__PRETTY_FUNCTION__, window, m_window);
-		if (m_window != window) {
-			LOGE("%s:%d> incoherent window object from message (%p!=%p)",
-					__FILE__, __LINE__, m_window, window);
-			m_window = window;
-		}
+		LOGV("%s:%d> in %s(window=%p)\n", __FILE__, __LINE__,
+				__FUNCTION__, window);
 		m_dispatcher.send_sync_event(system_event::window_resized, window);
 	}
 
 	void native_activity::on_window_redraw_needed(ANativeWindow* window)
 	{
-		LOGV("%s:%d> in %s(w=%p), m_window=%p\n", __FILE__, __LINE__,
-				__PRETTY_FUNCTION__, window, m_window);
-		if (m_window != window) {
-			LOGE("%s:%d> incoherent window object from message (%p!=%p)",
-					__FILE__, __LINE__, m_window, window);
-			m_window = window;
-		}
+		LOGV("%s:%d> in %s(window=%p)\n", __FILE__, __LINE__,
+				__FUNCTION__, window);
 		m_dispatcher.send_sync_event(system_event::window_exposed, window);
 	}
 
 	void native_activity::on_window_destroyed(ANativeWindow* window)
 	{
-		LOGV("%s:%d> in %s(w=%p), m_window=%p\n", __FILE__, __LINE__,
-				__PRETTY_FUNCTION__, window, m_window);
-		if (m_window != window) {
-			LOGE("%s:%d> incoherent window object from message (%p!=%p)",
-					__FILE__, __LINE__, m_window, window);
-			m_window = window;
-		}
+		LOGV("%s:%d> in %s(window=%p)\n", __FILE__, __LINE__,
+				__FUNCTION__, window);
 		m_dispatcher.send_sync_event(system_event::window_destroyed, window);
-		m_window = NULL;
 	}
 
 	void native_activity::on_input_queue_created(AInputQueue *q)

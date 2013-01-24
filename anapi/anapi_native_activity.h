@@ -47,7 +47,6 @@ namespace anapi
 		instance_state m_istate;
 		message_dispatcher m_dispatcher;
 		condition m_started;
-		ANativeWindow *m_window;
 
 	public:
 		native_activity(ANativeActivity *a, const instance_state& istate);
