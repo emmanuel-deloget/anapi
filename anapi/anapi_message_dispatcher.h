@@ -54,16 +54,9 @@ namespace anapi
 		template <class Arg0, class... Args>
 		struct sender<Arg0, Args...>
 		{
-			// overload, for non-pointer parameters
 			static void process(int fd, Arg0 arg0, Args... args)
 			{
 				write(fd, &arg0, sizeof(Arg0));
-				sender<Args...>::process(fd, args...);
-			}
-			// overload, for pointer parameters
-			static void process(int fd, Arg0 *arg0, Args... args)
-			{
-				write(fd, arg0, sizeof(Arg0));
 				sender<Args...>::process(fd, args...);
 			}
 		};
