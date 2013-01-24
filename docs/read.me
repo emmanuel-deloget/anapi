@@ -1,0 +1,134 @@
+=============================== anapi++ ================================
+
+Anapi++ means "Android Native API".
+
+Anapi++ is a C++ interface for the Android Native Development Kit (NDK).
+Its goal is to help building native activities by wrapping the necessary
+functions into a convenient C++ library.
+
+Anapi++ is written in C++11, meaning that you must compile it with a
+recent C++ compiler (the NDK ships with gcc 4.7; this compiler supports
+a large subset of the C++11 language).
+
+Anapi++ is an Open Source product which is distributed under the terms
+of a zlib-like license (meaning you can incorporate it in any kind of
+product, including commercial products). The full text of this license
+is to be found in docs/license.
+
+========================================================================
+Using anapi++: a crash course
+
+Anapi++ is built as a static library. In order to use it in you project,
+simply copy the anapi/ directory in your jni/ directory, and add the
+following lines to your Android.mk file:
+
+------------------------------------------------------------<Android.mk>
+LOCAL_PATH := $(call my-dir)
+
+### ADD THE FOLLOWING LINE
+include $(LOCAL_PATH)/anapi/Anapi.mk
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE		:= $(YOUR_NATIVE_ACTIVITY_NAME)
+LOCAL_SRC_FILES		:= $(YOUR_SOURCE_FILES)
+
+### ADD THE FOLLOWING LINE
+LOCAL_STATIC_LIBRARIES	:= anapi
+
+### USE THESE CFLAGS, LDFLAGS AND CPP_FEATURES
+LOCAL_CFLAGS		:= -std=c++11
+LOCAL_LDLIBS		:= -llog -landroid
+LOCAL_CPP_FEATURES	+= exceptions rtti
+
+include $(BUILD_SHARED_LIBRARY)
+------------------------------------------------------------<Android.mk>
+
+Of course, the variables named $(YOUR_xxx) are supposed to be replaced
+by the corresponding values.
+
+It's important to include anapi/Anapi.mk BEFORE clearing the variables
+but after the initialisation of LOCAL_PATH (otherwise nothing will
+build).
+
+Your Application.mk file must be modified (if you don't have one, it
+must be created)in order to have this content:
+
+--------------------------------------------------------<Application.mk>
+APP_STL := gnustl_static
+APP_ABI := armeabi-v7a
+NDK_TOOLCHAIN_VERSION := 4.7
+--------------------------------------------------------<Application.mk>
+
+The anapi++ header files are located in the anapi/ directory, thus
+including them is as simple as adding
+
+#include "anapi/anapi_app.h"
+
+in your C++ source code.
+
+All anapi++ classes, structures and types are located in the anapi
+namespace.
+
+The only thing you have to do is to inherit a class from anapi::app
+and instantiate your class by creating a global variable.
+
+-----------------------------------------------------------<example.cpp>
+#include "anapi/anapi_app.h"
+
+class example_app : public anapi::app
+{
+public:
+	example_app() : anapi::app()
+	{ }
+	virtual ~example_app()
+	{ }
+};
+-----------------------------------------------------------<example.cpp>
+
+If you compile this code and link it with anapi++, you should get an
+empty window with a title bar.
+
+Next, you can override a few event handlers (the virtual functions
+whose names begin with on_). These methods are supposed to return
+false if you don't handle the event, or true otherwise. The only
+exception to these rules are:
+
+* on_idle(), which returns nothing
+* on_key(), which may return both true and false depending on the
+  keycode (you may want to return false when the keycode is
+  AKEYCODE_BACK ; you can use key_event::is_back() to get this
+  information).
+
+The anapi::app class provides a method app::activity(), which returns
+an anapi::app_activity instance that can be used to perform some
+operations related to the native activity.
+
+========================================================================
+Latest news
+
+  Version 0.1.0 - initial release
+
+========================================================================
+Known issues
+
+* It's not yet possible to play with the saved instance state. This
+  feature is on the road map.
+
+* anapi++ has yet to be tested on a real device. It has been tested
+  in the Android emulator and seems to work fine.
+
+* Most of the code has been written during a short week-end, in a hurry
+  (in fact, the goal was to provide some support for a blog article).
+  As a consequence, its design is quite poor, and some C++11 features
+  are not used (for example, move ctors are systematically deleted).
+  I have the plan to refactor a few things here and there, and to
+  enhance the implementation in order to use more powerfull C++11
+  features.
+
+* JNI calls are not supported yet. This feature is on the road map.
+
+* event objects are lacking a lot of features. They will be added later.
+
+* the system lacks a way to properly quit the native activity. This
+  will be added soon.
