@@ -29,7 +29,7 @@
 
 #include <sys/time.h>
 #include "anapi_native_activity.h"
-#include "anapi_native_window.h"
+#include "anapi_app_window.h"
 #include "anapi_events.h"
 #include "anapi_log.h"
 
@@ -205,7 +205,7 @@ namespace anapi
 
 	bool native_activity::dispatch_message(app& the_app, bool& shall_quit)
 	{
-		return m_dispatcher.dispatch_message(the_app, native_window(m_window), shall_quit);
+		return m_dispatcher.dispatch_message(the_app, app_window(m_window), shall_quit);
 	}
 
 	void native_activity::prepare_msg_dispatcher()

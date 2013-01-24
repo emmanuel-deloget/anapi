@@ -33,7 +33,7 @@
 #include <stdexcept>
 #include "anapi_sync_primitives.h"
 #include "anapi_app_activity.h"
-#include "anapi_native_window.h"
+#include "anapi_app_window.h"
 #include "anapi_ticker.h"
 #include "anapi_events.h"
 
@@ -103,10 +103,10 @@ namespace anapi
 		virtual bool on_endcall() { return false; }
 
 		// Window events
-		virtual bool on_window_created(const native_window& w) { return false; }
-		virtual bool on_window_destroyed(const native_window& w) { return false; }
-		virtual bool on_window_exposed(const native_window& w) { return false; }
-		virtual bool on_window_resized(const native_window& w) { return false; }
+		virtual bool on_window_created(const app_window& w) { return false; }
+		virtual bool on_window_destroyed(const app_window& w) { return false; }
+		virtual bool on_window_exposed(const app_window& w) { return false; }
+		virtual bool on_window_resized(const app_window& w) { return false; }
 
 		// Motion events
 		virtual bool on_motion(const motion_event& mevent) { return false; }

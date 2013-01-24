@@ -141,7 +141,7 @@ namespace anapi
 		reset_queue_locked();
 	}
 
-	bool message_dispatcher::dispatch_message(app& the_app, const native_window& w, bool& shall_quit)
+	bool message_dispatcher::dispatch_message(app& the_app, const app_window& w, bool& shall_quit)
 	{
 		shall_quit = false;
 
@@ -251,7 +251,7 @@ namespace anapi
 		return false;
 	}
 
-	bool message_dispatcher::fire_on_winevent(app& the_app, const system_event& se, const native_window& w)
+	bool message_dispatcher::fire_on_winevent(app& the_app, const system_event& se, const app_window& w)
 	{
 		LOGI("%s:%d> firing window event %s\n", __FILE__, __LINE__,
 				get_sys_event_name(se).c_str());

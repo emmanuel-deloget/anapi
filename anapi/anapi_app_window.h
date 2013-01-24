@@ -27,41 +27,41 @@
 //
 // *********************************************************************
 
-#ifndef anapi_window_h_included
-#define anapi_window_h_included
+#ifndef anapi_app_window_h_included
+#define anapi_app_window_h_included
 
 #include <android/native_window.h>
 
 namespace anapi
 {
 
-	class native_window
+	class app_window
 	{
 	private:
 		ANativeWindow *m_window;
 
 	public:
-		native_window(ANativeWindow *w)
+		app_window(ANativeWindow *w)
 		: m_window(w)
 		{ }
-		~native_window()
+		~app_window()
 		{ }
 
-		native_window(const native_window& other)
+		app_window(const app_window& other)
 		: m_window(other.m_window)
 		{ }
 
-		native_window& operator=(const native_window& other)
+		app_window& operator=(const app_window& other)
 		{
 			m_window = other.m_window;
 			return *this;
 		}
 
 	private:
-		native_window(native_window&&) = delete;
-		native_window& operator=(native_window&&) = delete;
+		app_window(app_window&&) = delete;
+		app_window& operator=(app_window&&) = delete;
 	};
 
 }
 
-#endif // anapi_window_h_included
+#endif // anapi_app_window_h_included

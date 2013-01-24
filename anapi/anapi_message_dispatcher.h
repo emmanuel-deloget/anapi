@@ -33,7 +33,7 @@
 #include <vector>
 #include <android/looper.h>
 #include <android/input.h>
-#include "anapi_native_window.h"
+#include "anapi_app_window.h"
 #include "anapi_sync_primitives.h"
 #include "anapi_ticker.h"
 #include "anapi_app.h"
@@ -67,7 +67,7 @@ namespace anapi
 		void reset_queue_locked();
 		void attach_queue(AInputQueue *q);
 		bool fire_on_sysevent(app& the_app, const system_event& sysevent, bool& shall_quit);
-		bool fire_on_winevent(app& the_app, const system_event& sysevent, const native_window& w);
+		bool fire_on_winevent(app& the_app, const system_event& sysevent, const app_window& w);
 		bool fire_on_key(app& the_app, AInputEvent *ie);
 		bool fire_on_motion(app& the_app, AInputEvent *ie);
 		bool fire_on_dpad(app& the_app, AInputEvent *ie);
@@ -80,7 +80,7 @@ namespace anapi
 		void fire_sys_event(const system_event& se);
 		void fire_rect_changed(const system_event& se, const ARect *r);
 		void fire_idle(app& the_app);
-		bool dispatch_message(app& the_app, const native_window& w, bool& shall_quit);
+		bool dispatch_message(app& the_app, const app_window& w, bool& shall_quit);
 	};
 
 }
