@@ -25,20 +25,18 @@ following lines to your Android.mk file:
 ------------------------------------------------------------<Android.mk>
 LOCAL_PATH := $(call my-dir)
 
-### THESE DECLARATION IS OPTIONAL
-# ANAPI_SUB_PATH := somedir/
-### ADD THE FOLLOWING LINE
-include $(LOCAL_PATH)/anapi/Anapi.mk
+### Add the following two lines (MANDATORY)
+ANAPI_SUB_PATH := anapi++-x.y.z
+include $(LOCAL_PATH)/$(ANAPI_SUB_PATH)/Anapi.mk
 
 include $(CLEAR_VARS)
 
 LOCAL_MODULE		:= $(YOUR_NATIVE_ACTIVITY_NAME)
 LOCAL_SRC_FILES		:= $(YOUR_SOURCE_FILES)
 
-### ADD THE FOLLOWING LINE
-LOCAL_STATIC_LIBRARIES	:= anapi
-
-### USE AT LEAST THESE CFLAGS, LDFLAGS, LDLIBS AND CPP_FEATURES
+### Use at least these CFLAGS, LDFLAGS, LDLIBS, CPP_FEATURES and
+### STATIC LIBRARIES (MANDATORY)
+LOCAL_STATIC_LIBRARIES	:= $(ANAPI_STATIC_LIBRARIES)
 LOCAL_CFLAGS		:= $(ANAPI_ADDITIONAL_CFLAGS)
 LOCAL_LDLIBS		:= $(ANAPI_ADDITIONAL_LDLIBS)
 LOCAL_LDFLAGS		:= $(ANAPI_ADDITIONAL_LDFLAGS)
@@ -54,27 +52,28 @@ It's important to include anapi/Anapi.mk BEFORE clearing the variables
 but after the initialisation of LOCAL_PATH (otherwise nothing will
 build).
 
-The ANAPI_ADDITIONAL_xxx variables are defined in Anapi.mk to be used
-in your Android.mk file. They are supposed to be used as in the example
-above. All four variables must be set - otherwise your project may fail
-to compile, link or run (depending on the missing variable). These
-variables are not cleaned by the $(CLEAR_VARS) script and thus can be
-used to compile multiple projects.
+The ANAPI_ADDITIONAL_xxx and ANAPI_STATIC_LIBRARIES variables are defined
+in Anapi.mk to be used in your Android.mk file. They are supposed to be
+used as in the example above. All five variables must be set - otherwise
+your project may fail to compile, link or run (depending on the missing
+variable). These variables are not cleaned by the $(CLEAR_VARS) script
+and thus can be used to compile multiple projects.
 
-ANAPI_SUB_PATH can be set to a non-empty value if the source code of
-the anapi++ library is not located directly in the anapi/ directory.
-In the following configuration
+The ANAPI_SUB_PATH variable is to be set to the name of the relative
+directory where the file Anapi.mk is stored. This is typically a sub-
+directory of jni/, and it's name is often anapi++-x.y.z where x.y.z is
+the version of the library.
+
+In the following configuration:
 
   project/
     jni/
-      somedir/
+      anapi++-x.y.z/
         anapi/
         docs/
         samples/
 
-the ANAPI_SUB_PATH variable is to be set to somedir/ (note that it also
-changes the path of the include files, meaning that you shall also add
-a -I option to the CFLAGS as shown above).
+the ANAPI_SUB_PATH variable is to be set to anapi++-x.y.z.
 
 Your Application.mk file must be modified (if you don't have one, it
 must be created)in order to have this content:
