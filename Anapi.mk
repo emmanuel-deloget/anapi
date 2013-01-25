@@ -1,0 +1,10 @@
+ANAPI_PATH := $(LOCAL_PATH)/$(ANAPI_SUB_PATH)
+
+ANAPI_ADDITIONAL_CFLAGS := -std=c++11
+ANAPI_ADDITIONAL_LDFLAGS := -u ANativeActivity_onCreate
+ANAPI_ADDITIONAL_LDLIBS := -llog -landroid
+ANAPI_ADDITIONAL_CPP_FEATURES := exceptions rtti
+
+ANAPI_ADDITIONAL_CFLAGS += -I $(ANAPI_PATH)
+
+include $(ANAPI_PATH)/anapi/Source.mk

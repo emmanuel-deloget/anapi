@@ -29,17 +29,6 @@
 
 include $(CLEAR_VARS)
 
-ANAPI_ADDITIONAL_CFLAGS := -std=c++11
-ANAPI_ADDITIONAL_LDFLAGS := -u ANativeActivity_onCreate
-ANAPI_ADDITIONAL_LDLIBS := -llog -landroid
-ANAPI_ADDITIONAL_CPP_FEATURES := exceptions rtti
-
-ifeq ($(strip $(ANAPI_SUB_PATH)),)
-  ANAPI_SUB_PATH := .
-else
-  ANAPI_ADDITIONAL_CFLAGS += -I $(LOCAL_PATH)/$(ANAPI_SUB_PATH)
-endif
-
 LOCAL_MODULE		:=	anapi
 LOCAL_SRC_FILES		:=	\
 	$(ANAPI_SUB_PATH)/anapi/anapi_main.cpp \
