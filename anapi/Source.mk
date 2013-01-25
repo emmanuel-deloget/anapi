@@ -29,7 +29,7 @@
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE		:=	anapi
+LOCAL_MODULE		:=	anapi++
 LOCAL_SRC_FILES		:=	\
 	$(ANAPI_SUB_PATH)/anapi/anapi_main.cpp \
 	$(ANAPI_SUB_PATH)/anapi/anapi_native_activity.cpp \
@@ -42,5 +42,7 @@ LOCAL_SRC_FILES		:=	\
 
 LOCAL_CFLAGS		:=	$(ANAPI_ADDITIONAL_CFLAGS) -Wall -Werror
 LOCAL_CPP_FEATURES 	+=	$(ANAPI_ADDITIONAL_CPP_FEATURES)
+
+ANAPI_STATIC_LIBRARIES += $(LOCAL_MODULE)
 
 include $(BUILD_STATIC_LIBRARY)
