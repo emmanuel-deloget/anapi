@@ -57,6 +57,8 @@ namespace anapi
 			return *this;
 		}
 
+		int set_buffer_geometry(unsigned int width, unsigned int height, int format) const;
+
 	private:
 		app_window(app_window&&) = delete;
 		app_window& operator=(app_window&&) = delete;
