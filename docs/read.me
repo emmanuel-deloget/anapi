@@ -129,6 +129,19 @@ an anapi::app_activity instance that can be used to perform some
 operations related to the native activity.
 
 ========================================================================
+Using anapi++ features.
+
+One can use anapi++ features by setting a value to the variable
+ANAPI_FEATURES before the inclusion of Anapi.mk. The currently
+supported features are experimental.
+
+List of supported features:
+
+  gles2: set of class to insulate the programmer from the OpenGL ES 2.0
+         API. Using these classes, you should make most of you glXXX
+         function calls go away.
+
+========================================================================
 Latest news
 
   Version 0.1.0 - initial release
