@@ -31,11 +31,11 @@
 #include "anapi_log.h"
 #include "anapi_sync_primitives.h"
 
-anapi::mutex anapi::app::m_app_mutex;
-anapi::app *anapi::app::m_app = NULL;
-
 namespace anapi
 {
+
+	mutex app::m_app_mutex;
+	app *app::m_app = NULL;
 
 	void app::terminate(const app_activity& activity) const
 	{
