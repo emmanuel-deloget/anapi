@@ -62,7 +62,8 @@ namespace anapi
 					} else if (result == event_result::handled) {
 						continue;
 					}
-					a->dispatch_idle(the_app);
+					if (!the_app.terminating())
+						a->dispatch_idle(the_app);
 				} while (true);
 			} catch (std::exception& e) {
 				LOGE("%s:%d > an exception occurred: '%s'\n", __FILE__, __LINE__, e.what());
