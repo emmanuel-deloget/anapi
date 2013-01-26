@@ -187,7 +187,7 @@ namespace anapi
 		return event_result::unhandled;
 	}
 
-	void message_dispatcher::fire_idle(app& the_app)
+	void message_dispatcher::send_idle(app& the_app)
 	{
 		if (!m_ticker.paused() && m_has_focus) {
 			m_ticker.update();

@@ -118,7 +118,7 @@ namespace anapi
 		void prepare();
 		void setup_queue(AInputQueue *q);
 		void reset_queue();
-		void fire_idle(app& the_app);
+		void send_idle(app& the_app);
 		event_result dispatch_message(app& the_app);
 
 		template <class... Args>

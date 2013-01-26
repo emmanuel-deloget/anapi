@@ -252,7 +252,7 @@ namespace anapi
 
 	void native_activity::dispatch_idle(app& the_app)
 	{
-		m_dispatcher.fire_idle(the_app);
+		m_dispatcher.send_idle(the_app);
 	}
 
 	void native_activity::on_configuration_changed()
