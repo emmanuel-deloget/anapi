@@ -28,7 +28,19 @@
 // *********************************************************************
 
 #include "anapi_app.h"
+#include "anapi_log.h"
 #include "anapi_sync_primitives.h"
 
 anapi::mutex anapi::app::m_app_mutex;
 anapi::app *anapi::app::m_app = NULL;
+
+namespace anapi
+{
+
+	void app::terminate(const app_activity& activity) const
+	{
+		LOGI("%s:%d> app asked to terminate the activity\n", __FILE__, __LINE__);
+		activity.finish();
+	}
+
+}

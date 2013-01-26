@@ -68,6 +68,8 @@ namespace anapi
 			return *m_app;
 		}
 
+		void terminate(const app_activity& activity) const;
+
 		// This function is called when no event is to
 		// be processed.
 		virtual void on_idle(const ticker& ticker) { }
