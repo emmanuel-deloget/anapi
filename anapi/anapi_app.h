@@ -46,8 +46,6 @@ namespace anapi
 		static mutex m_app_mutex;
 		static app* m_app;
 
-		app_activity m_activity;
-
 	public:
 		app()
 		{
@@ -69,12 +67,6 @@ namespace anapi
 				throw std::runtime_error("no android::app exists");
 			return *m_app;
 		}
-
-		void register_activity(const app_activity& a)
-		{ m_activity = a; }
-
-		const app_activity& activity() const
-		{ return m_activity; }
 
 		// This function is called when no event is to
 		// be processed.
