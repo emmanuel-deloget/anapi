@@ -203,7 +203,6 @@ namespace anapi
 		case system_event::stop:
 			return the_app.on_stop() ? event_result::handled : event_result::unhandled;
 		case system_event::start: {
-			ANativeActivity *activity;
 			return the_app.on_start() ? event_result::handled : event_result::unhandled;
 			}
 		case system_event::gained_focus:
