@@ -202,8 +202,11 @@ namespace anapi
 		switch (se) {
 		case system_event::stop:
 			return the_app.on_stop() ? event_result::handled : event_result::unhandled;
-		case system_event::start:
-			return the_app.on_start() ? event_result::handled : event_result::unhandled;
+		case system_event::start: {
+			ANativeActivity *activity;
+			read(m_readfd, &activity, sizeof(ANativeActivity *));
+			return the_app.on_start(app_activity(activity)) ? event_result::handled : event_result::unhandled;
+			}
 		case system_event::gained_focus:
 			m_has_focus = true;
 			return the_app.on_gained_focus() ? event_result::handled : event_result::unhandled;
