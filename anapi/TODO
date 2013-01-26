@@ -1,0 +1,20 @@
+==============================================================================
+TODO
+==============================================================================
+
+* implement on_configuration_changed() as an asynchronous event.
+
+* implement on_save_instance_state() as a synchronous event.
+
+* the ticker is awful. How can it be enhanced?
+
+* the event dispatcher should be able to pick a message interpretor
+  from a list instead of relying on a fixed set of interpretors. This
+  list shall be modifiable from the outside - possibly from the app
+  itself. 
+
+* log should be rewritten. 
+
+* both the app_activity and app_window are missing a lot of features.
+
+* the app environment should be available to the app itself.
