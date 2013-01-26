@@ -41,6 +41,7 @@ namespace anapi
 	{
 		LOGI("%s:%d> app asked to terminate the activity\n", __FILE__, __LINE__);
 		activity.finish();
+		m_terminating = true;
 	}
 
 }

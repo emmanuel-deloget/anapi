@@ -45,6 +45,7 @@ namespace anapi
 	private:
 		static mutex m_app_mutex;
 		static app* m_app;
+		mutable bool m_terminating;
 
 	public:
 		app()
@@ -69,6 +70,9 @@ namespace anapi
 		}
 
 		void terminate(const app_activity& activity) const;
+
+		bool terminating() const
+		{ return m_terminating; }
 
 		// This function is called when no event is to
 		// be processed.
