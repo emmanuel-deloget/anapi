@@ -2,7 +2,7 @@
 TODO
 ==============================================================================
 
-* egl::context::make_context() should take a list of valid configurations as
+* egl::context::allocate() should take a list of valid configurations as
   a parameter - instead of choosing an arbitrary  configuration.
 
 * a surface object shall be created in namespace egl.
