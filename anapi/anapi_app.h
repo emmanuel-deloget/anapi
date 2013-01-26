@@ -85,9 +85,10 @@ namespace anapi
 		// return false when kcode == AKEYCODE_BACK
 
 		// System events
+		virtual void on_create(const app_activity& activity) = 0;
 		virtual bool on_pause() { return false; }
 		virtual bool on_resume() { return false; }
-		virtual bool on_start(const app_activity& activity) { return false; }
+		virtual bool on_start() { return false; }
 		virtual bool on_stop() { return false; }
 		virtual bool on_quit() { return false; }
 		virtual bool on_gained_focus() { return false; }

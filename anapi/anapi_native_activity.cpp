@@ -275,7 +275,7 @@ namespace anapi
 	void native_activity::on_start()
 	{
 		LOGV("%s:%d> in %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-		m_dispatcher.send_event(system_event::start, m_activity);
+		m_dispatcher.send_event(system_event::start);
 	}
 
 	void native_activity::on_stop()
