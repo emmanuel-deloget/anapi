@@ -58,6 +58,9 @@ namespace egl
 	    , m_context(c)
 	    { }
 
+	    bool valid() const
+	    { return m_display != EGL_NO_DISPLAY && m_surface != EGL_NO_SURFACE && m_context != EGL_NO_CONTEXT; }
+
 	public:
 		context()
 		: m_display(EGL_NO_DISPLAY)
@@ -82,9 +85,7 @@ namespace egl
 		{ return m_height; }
 
 		explicit operator bool() const
-		{
-			return m_display != EGL_NO_DISPLAY && m_surface != EGL_NO_SURFACE && m_context != EGL_NO_CONTEXT;
-		}
+		{ return valid(); }
 
 	private:
 		context(const context&) = delete;

@@ -42,32 +42,19 @@ namespace egl
 	, m_context(other.release_context())
 	, m_width(other.width())
 	, m_height(other.height())
-	{
-		LOGV("%s:%d> in %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
+	{ }
 
 	context::~context()
-	{
-		liberate();
-	}
-
-	void context::liberate()
-	{
-		if (m_display != EGL_NO_DISPLAY) {
-			eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-			if (m_context != EGL_NO_CONTEXT)
-				eglDestroyContext(m_display, m_context);
-			if (m_surface != EGL_NO_SURFACE)
-				eglDestroySurface(m_display, m_surface);
-			eglTerminate(m_display);
-		}
-	}
+	{ liberate(); }
 
 	context& context::operator=(context&& other)
 	{
-		std::swap(m_display, other.m_display);
-		std::swap(m_surface, other.m_surface);
-		std::swap(m_context, other.m_context);
+		m_display = other.m_display;
+		m_surface = other.m_surface;
+		m_context = other.m_context;
+		other.m_display = EGL_NO_DISPLAY;
+		other.m_surface = EGL_NO_SURFACE;
+		other.m_context = EGL_NO_CONTEXT;
 		return *this;
 	}
 
@@ -93,8 +80,6 @@ namespace egl
 	    EGLint numConfigs;
 	    EGLConfig config;
 
-	    liberate();
-
 		m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 		eglInitialize(m_display, 0, 0);
 		eglChooseConfig(m_display, attribs, &config, 1, &numConfigs);
@@ -113,6 +98,21 @@ namespace egl
 	    eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &m_height);
 
 	    return true;
+	}
+
+	void context::liberate()
+	{
+		if (m_display != EGL_NO_DISPLAY) {
+			eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+			if (m_context != EGL_NO_CONTEXT)
+				eglDestroyContext(m_display, m_context);
+			if (m_surface != EGL_NO_SURFACE)
+				eglDestroySurface(m_display, m_surface);
+			eglTerminate(m_display);
+		}
+		m_display = EGL_NO_DISPLAY;
+		m_surface = EGL_NO_SURFACE;
+		m_context = EGL_NO_CONTEXT;
 	}
 
 }
