@@ -22,3 +22,10 @@ anapi++ -- a C++ interface for the Android NDK
     distribution.
 
  Emmanuel Deloget logout@free.fr
+
+==
+
+The licensing terms for the external libraries are stored in their
+respective directory.
+
+This package does not contain any GPL or LGPL code.
