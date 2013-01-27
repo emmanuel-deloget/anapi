@@ -188,7 +188,8 @@ namespace anapi
 	native_activity::~native_activity()
 	{
 		m_activity->instance = NULL;
-		reset_callbacks();
+		// again, this proves to be an issue, and I still don't know why
+		// reset_callbacks();
 		LOGV("%s:%d> native_activity(%p) is destroyed\n", __FILE__, __LINE__, this);
 	}
 
