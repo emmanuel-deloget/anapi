@@ -50,7 +50,7 @@ namespace anapi
 				a->prepare_msg_dispatcher();
 
 				app& the_app = app::get_instance();
-				the_app.on_create(a->ptr());
+				the_app.on_create(app_activity(a->ptr()), app_runenv(a->ptr()));
 
 				LOGI("%s:%d> thread is about to be started\n", __FILE__, __LINE__);
 				a->started();

@@ -33,6 +33,7 @@
 #include <stdexcept>
 #include "anapi_sync_primitives.h"
 #include "anapi_app_activity.h"
+#include "anapi_app_runenv.h"
 #include "anapi_app_window.h"
 #include "anapi_ticker.h"
 #include "anapi_events.h"
@@ -85,7 +86,7 @@ namespace anapi
 		// return false when kcode == AKEYCODE_BACK
 
 		// System events
-		virtual void on_create(const app_activity& activity) = 0;
+		virtual void on_create(const app_activity& activity, const app_runenv& runenv) = 0;
 		virtual bool on_pause() { return false; }
 		virtual bool on_resume() { return false; }
 		virtual bool on_start() { return false; }
