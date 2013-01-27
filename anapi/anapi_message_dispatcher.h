@@ -93,6 +93,7 @@ namespace anapi
 		ticker m_ticker;
 		condition m_syncevent;
 		bool m_has_focus;
+		bool m_has_window;
 
 	public:
 		message_dispatcher();

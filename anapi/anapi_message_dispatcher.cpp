@@ -76,6 +76,7 @@ namespace anapi
 	, m_iqueue(NULL)
 	, m_ticker()
 	, m_has_focus(false)
+	, m_has_window(false)
 	{
 		int fds[2];
 
@@ -189,7 +190,7 @@ namespace anapi
 
 	void message_dispatcher::send_idle(app& the_app)
 	{
-		if (!m_ticker.paused() && m_has_focus) {
+		if (!m_ticker.paused() && m_has_focus && m_has_window) {
 			m_ticker.update();
 			the_app.on_idle(m_ticker);
 		}
@@ -247,9 +248,11 @@ namespace anapi
 		switch (se) {
 		case system_event::window_created:
 			h = the_app.on_window_created(app_window(wnd));
+			m_has_window = true;
 			break;
 		case system_event::window_destroyed:
 			h = the_app.on_window_destroyed(app_window(wnd));
+			m_has_window = false;
 			break;
 		case system_event::window_exposed:
 			h = the_app.on_window_exposed(app_window(wnd));
