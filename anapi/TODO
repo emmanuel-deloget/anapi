@@ -18,3 +18,6 @@ TODO
 * both the app_activity and app_window are missing a lot of features.
 
 * the app environment should be available to the app itself.
+
+* there is still on bug I don't understand when the framwork calls 
+  native_activity::reset_callbacks. 
