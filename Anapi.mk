@@ -38,8 +38,15 @@ ANAPI_ADDITIONAL_CFLAGS += -I $(ANAPI_PATH)
 
 ANAPI_STATIC_LIBRARIES :=
 
+include $(ANAPI_PATH)/host-tools/Host.mk
+
 # the feature libraries shall be built before anapi++
 # since they depend on it (and the NDK linker is a bit
 # touchy about library order...).
 include $(foreach feature,$(ANAPI_FEATURES),$(ANAPI_PATH)/$(feature)/Source.mk)
 include $(ANAPI_PATH)/anapi/Source.mk
+
+all: target_assets
+
+target_assets:
+	@ echo
