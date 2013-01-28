@@ -1,0 +1,24 @@
+Object Package (.opak) file format
+===============================================================================
+
+This file document the Object Package file format used by ekogen to store
+the game data. The .opak file is created using the opak tool which is
+host-compiled on your platform when you compile your anapi++ project. 
+
+IMPORTANT: all data are in network order.  
+
+OFFSET            SIZE         DESCRIPTION
+0                 4            DIC = dictionary item count
+4                 DIC * 40     dictionary
+(4 + DIC * 40)    4            content type (none=0, raw=1...)
+(8 + DIC * 40)    n            content of the first embedded file
+
+Each dictionnary entry is 
+
+OFFSET            SIZE         DESCRIPTION
+0                 16           ID = object id
+16                4            START = offset file where the object starts
+20                4            LENGTH = length of the object
+24                4            TYPE = data type (none, raw, text, png, jpeg...)
+32                12           reserved for future use
+
