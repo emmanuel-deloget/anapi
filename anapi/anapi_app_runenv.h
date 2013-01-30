@@ -31,6 +31,7 @@
 #define anapi_app_runenv_h_included
 
 #include <android/native_activity.h>
+#include "anapi_asset_manager.h"
 
 namespace anapi
 {
@@ -39,25 +40,30 @@ namespace anapi
 	{
 	private:
 		ANativeActivity *m_activity;
+		JNIEnv *m_jni;
 
 	public:
 		app_runenv()
 		: m_activity(NULL)
+		, m_jni(NULL)
 		{ }
 		~app_runenv()
 		{ }
 
-		app_runenv(ANativeActivity *a)
+		app_runenv(ANativeActivity *a, JNIEnv* jni)
 		: m_activity(a)
+		, m_jni(jni)
 		{ }
 
 		app_runenv(const app_runenv& other)
 		: m_activity(other.m_activity)
+		, m_jni(other.m_jni)
 		{ }
 
 		app_runenv& operator=(const app_runenv& other)
 		{
 			m_activity = other.m_activity;
+			m_jni = other.m_jni;
 			return *this;
 		}
 
