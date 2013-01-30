@@ -45,12 +45,17 @@ namespace anapi
 
 		if (a) {
 			try {
+
+				// we need to attach the thread to the vm
+				// in order to make JNI calls
+				a->attach_current_thread();
+
 				// the dispatcher is a per-thread thingy
 				// (based upon the Android ALooper object)
 				a->prepare_msg_dispatcher();
 
 				app& the_app = app::get_instance();
-				the_app.on_create(app_activity(a->ptr()), app_runenv(a->ptr()));
+				the_app.on_create(app_activity(a->ptr()), app_runenv(a->ptr(), a->jni()));
 
 				LOGI("%s:%d> thread is about to be started\n", __FILE__, __LINE__);
 				a->started();
