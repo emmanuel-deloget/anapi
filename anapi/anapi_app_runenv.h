@@ -73,6 +73,9 @@ namespace anapi
 		std::string internal_data_path() const
 		{ return std::string(m_activity->internalDataPath); }
 
+		asset_manager make_asset_manager() const
+		{ return asset_manager(m_jni, m_activity->assetManager); }
+
 	private:
 		app_runenv(app_runenv&&) = delete;
 		app_runenv& operator=(app_runenv&&) = delete;
