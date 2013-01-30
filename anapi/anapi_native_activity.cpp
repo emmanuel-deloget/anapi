@@ -28,6 +28,7 @@
 // *********************************************************************
 
 #include <sys/time.h>
+#include <android/asset_manager_jni.h>
 #include "anapi_native_activity.h"
 #include "anapi_app_window.h"
 #include "anapi_events.h"
@@ -180,6 +181,7 @@ namespace anapi
 	: m_activity(a)
 	, m_istate(istate)
 	, m_dispatcher()
+	, m_jnienv(NULL)
 	{
 		LOGV("%s:%d> native_activity(%p) is created\n", __FILE__, __LINE__, this);
 		setup_callbacks();
@@ -254,6 +256,18 @@ namespace anapi
 	void native_activity::dispatch_idle(app& the_app)
 	{
 		m_dispatcher.send_idle(the_app);
+	}
+
+	void native_activity::attach_current_thread()
+	{
+		m_activity->vm->AttachCurrentThread(&m_jnienv, NULL);
+		// jobject jam = (jobject)(m_activity->assetManager);
+		// AAssetManager_fromJava(m_jnienv, jam);
+	}
+
+	void native_activity::detach_current_thread()
+	{
+		m_activity->vm->DetachCurrentThread();
 	}
 
 	void native_activity::on_configuration_changed()

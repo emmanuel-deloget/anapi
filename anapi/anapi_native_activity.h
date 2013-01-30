@@ -47,6 +47,7 @@ namespace anapi
 		instance_state m_istate;
 		message_dispatcher m_dispatcher;
 		condition m_started;
+		JNIEnv *m_jnienv;
 
 	public:
 		native_activity(ANativeActivity *a, const instance_state& istate);
@@ -81,6 +82,8 @@ namespace anapi
 
 	public:
 		void prepare_msg_dispatcher();
+		void attach_current_thread();
+		void detach_current_thread();
 
 		void started();
 		void wait_started();
@@ -89,6 +92,9 @@ namespace anapi
 
 		ANativeActivity *ptr()
 		{ return m_activity; }
+
+		JNIEnv *jni()
+		{ return m_jnienv; }
 	};
 
 }
