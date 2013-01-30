@@ -38,7 +38,8 @@ LOCAL_SRC_FILES		:=	\
 	$(ANAPI_SUB_PATH)/anapi/anapi_app.cpp \
 	$(ANAPI_SUB_PATH)/anapi/anapi_ticker.cpp \
 	$(ANAPI_SUB_PATH)/anapi/anapi_app_activity.cpp \
-	$(ANAPI_SUB_PATH)/anapi/anapi_app_window.cpp
+	$(ANAPI_SUB_PATH)/anapi/anapi_app_window.cpp \
+	$(ANAPI_SUB_PATH)/anapi/anapi_asset_manager.cpp
 
 LOCAL_CFLAGS		:=	$(ANAPI_ADDITIONAL_CFLAGS) -Wall -Werror
 LOCAL_CPP_FEATURES 	+=	$(ANAPI_ADDITIONAL_CPP_FEATURES)
