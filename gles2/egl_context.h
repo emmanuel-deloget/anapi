@@ -36,6 +36,9 @@
 namespace egl
 {
 
+	enum struct present_type : unsigned int
+	{ normal, immediate };
+
 	class context
 	{
 	private:
@@ -76,7 +79,7 @@ namespace egl
 		bool allocate(const anapi::app_window& wnd);
 		void liberate();
 
-		void present();
+		void present(const present_type& type = present_type::normal);
 
 		int width() const
 		{ return m_width; }

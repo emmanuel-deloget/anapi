@@ -58,10 +58,13 @@ namespace egl
 		return *this;
 	}
 
-	void context::present()
+	void context::present(const present_type& type)
 	{
-		if (m_display != EGL_NO_DISPLAY && m_surface != EGL_NO_SURFACE)
+		if (m_display != EGL_NO_DISPLAY && m_surface != EGL_NO_SURFACE) {
+			if (type == present_type::immediate)
+				eglSwapInterval(m_display, 0);
 			eglSwapBuffers(m_display, m_surface);
+		}
 	}
 
 	// this is more or less awful... no error check, no
