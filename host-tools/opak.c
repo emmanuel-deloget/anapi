@@ -21,11 +21,12 @@ struct item_s {
 };
 
 struct option lopts[] = {
-	"help", 0, NULL, 'h',		/* get help */
-	"version", 0, NULL, 'V',	/* get version */
+	"help", 0, NULL, 'h',			/* get help */
+	"version", 0, NULL, 'V',		/* get version */
 	"description", 1, NULL, 'd',	/* feed opak with a description of what to include */
-	"output", 1, NULL, 'o',		/* give the path of the output file */
-	"check" , 0, NULL, 'c', 	/* check if the configuration file is valid */
+	"output", 1, NULL, 'o',			/* give the path of the output file */
+	"check" , 0, NULL, 'c', 		/* check if the configuration file is valid */
+	"relative-to", 1, NULL, 'R',	/* all path in the desc file is relative to this one */
 	NULL, 0, NULL, 0,
 };
 
@@ -376,6 +377,8 @@ int main(int ac, char *av[])
 	int check = 0;
 	item_t *items = NULL;
 	int result;
+	char *cwd;
+	char *change_dir = NULL;
 
 	while ((opt = getopt_long(ac, av, sopts, lopts, NULL)) >= 0) {
 		switch (opt) {
@@ -385,7 +388,7 @@ int main(int ac, char *av[])
 			break;
 		case 'V':
 			version(av[0]);
-			exit(EXIT_SUCCESS);
+			goto success;
 			break;
 		case 'o':
 			output = strdup(optarg);
@@ -396,10 +399,13 @@ int main(int ac, char *av[])
 		case 'c':
 			check = 1;
 			break;
+		case 'R':
+			change_dir = strdup(optarg);
+			break;
 		default:
 			fprintf(stderr, "error: unknown option %c\n", opt);
 			usage(av[0], 0);
-			return EXIT_FAILURE;
+			goto error;
 			break;
 		}
 	}
@@ -407,13 +413,18 @@ int main(int ac, char *av[])
 	if (!output || !desc) {
 		fprintf(stderr, "error: options -d and -o are mandatory\n");
 		usage(av[0], 0);
-		return EXIT_FAILURE;
+		goto error;
 	}
 
 	items = get_all_items(desc);
 	if (!items) {
 		fprintf(stderr, "error: no description in '%s'\n", desc);
-		return EXIT_FAILURE;
+		goto error;
+	}
+
+	if (change_dir) {
+		cwd = getcwd(NULL, 0);
+		chdir(change_dir);
 	}
 
 	result = populate_all_items(items);
@@ -432,6 +443,13 @@ int main(int ac, char *av[])
 		printf("\n");
 	}
 
+	if (change_dir) {
+		chdir(cwd);
+		free(cwd);
+		free(change_dir);
+		cwd = NULL;
+	}
+
 	if (result == 0) {
 		result = write_dict_and_items(items, output, check);
 	}	
@@ -439,7 +457,22 @@ int main(int ac, char *av[])
 	item_clear(items);
 
 	if (result < 0)
-		return EXIT_FAILURE;
+		goto error;
+
+success:
+	if (cwd) {
+		chdir(cwd);
+		free(cwd);
+		free(change_dir);
+	}
 
 	return EXIT_SUCCESS;
+
+error:
+	if (cwd) {
+		chdir(cwd);
+		free(cwd);
+		free(change_dir);
+	}
+	return EXIT_FAILURE;
 }
