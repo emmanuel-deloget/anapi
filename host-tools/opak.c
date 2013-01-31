@@ -94,6 +94,7 @@ static item_t *item_push(item_t *first, int type, char *id, char *path)
 	if (first) {
 		item_t *back = item_back(first);
 		back->next = item;
+		return first;
 	} else {
 		return item;
 	}
@@ -184,13 +185,6 @@ static const char *skipw(const char* s)
 	return s;
 }
 
-static const char *skipnw(const char* s)
-{
-	while (*s && *s != ' ' && *s != '\t')
-		++s;
-	return s;
-}
-
 static const char *skipnw_w(const char* s)
 {
 	while (*s && *s != ' ' && *s != '\t')
@@ -222,16 +216,6 @@ static int parse_line(const char* line, char **id, char** type, char** path)
 	return 0;
 }
 
-// from ekogen/ekogen_data_type.h
-// enum struct data_item_type : uint32_t
-// {
-// 	none = 0x00000000,
-// 	raw = 0x00000001,
-// 	text = 0x00000002,
-// 	ipng = 0x00010001,
-// 	ijpg = 0x00010002,
-// };
-
 typedef enum {
 	dit_none	= 0x00000000, 
 	dit_raw		= 0x00000001,
@@ -252,6 +236,18 @@ static int type_from_string(const char *s)
 		return dit_jpeg;
 	else
 		return dit_none;
+}
+
+static char *string_from_type(int t)
+{
+	switch (t) {
+	case dit_raw: return "raw";
+	case dit_text: return "text";
+	case dit_png: return "png";
+	case dit_jpeg: return "jpeg";
+	default:
+		return "none";
+	}
 }
 
 item_t *get_all_items(const char *path)
@@ -361,18 +357,15 @@ int write_dict_and_items(item_t *items, const char *output, int check)
 		pos += current->length;
 		current = current->next;
 	}
+	printf("%16s %8s %9s %9s\n", "================", "========", "=========", "=========");
 	current = items;
-	printf("%16s %28s\n", "================", "============================");
-	printf("%-16s %-28s\n", "id", "processing...");
-	printf("%16s %28s\n", "================", "============================");
 	while (current) {
-		printf("%-16s writing %u bytes\n", current->id, current->length);
 		write(fd, current->data, current->length);
 		current = current->next;
 	}
-	printf("%16s %28s\n", "================", "============================");
 
 	close(fd);
+	return 0;
 }
 
 int main(int ac, char *av[])
@@ -431,7 +424,8 @@ int main(int ac, char *av[])
 		printf("%-8s %-12s %s\n", "type", "file size", "file path");
 		printf("%-8s %-12s %s\n", "=======", "===========", "===========================================================================");
 		while (current) {
-			printf("%08x %-12lu %s\n", current->type, current->length, current->path);
+			printf("%-8s %-12lu [%s]\n", string_from_type(current->type),
+					current->length, current->path);
 			current = current->next;
 		}
 		printf("%-8s %-12s %s\n", "=======", "===========", "===========================================================================");
