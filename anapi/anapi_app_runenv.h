@@ -30,6 +30,7 @@
 #ifndef anapi_app_runenv_h_included
 #define anapi_app_runenv_h_included
 
+#include <string>
 #include <android/native_activity.h>
 #include "anapi_asset_manager.h"
 
@@ -75,6 +76,8 @@ namespace anapi
 
 		asset_manager make_asset_manager() const
 		{ return asset_manager(m_jni, m_activity->assetManager); }
+
+		bool extract_assets(bool external);
 
 	private:
 		app_runenv(app_runenv&&) = delete;
