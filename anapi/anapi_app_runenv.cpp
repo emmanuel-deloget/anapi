@@ -62,4 +62,23 @@ namespace anapi
 		return false;
 	}
 
+	bool app_runenv::extract_one_asset(const std::string& name, bool external)
+	{
+		try {
+			std::string outdir = external ? m_activity->externalDataPath : m_activity->internalDataPath;
+			// make sure we have an ending slash
+			outdir += "/";
+			asset_manager am(m_jni, m_activity->assetManager);
+			asset a = am.make_asset();
+			if (!a.open(name))
+				throw std::runtime_error("failed to open " + name);
+			if (!a.copy_to(outdir + name))
+				throw std::runtime_error("failed to copy " + name);
+			return true;
+		} catch (std::exception& e) {
+			LOGE("%s:%d> exception caught while extracting assets: %s\n", __FILE__, __LINE__, e.what());
+		}
+		return false;
+	}
+
 }

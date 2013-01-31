@@ -78,6 +78,7 @@ namespace anapi
 		{ return asset_manager(m_jni, m_activity->assetManager); }
 
 		bool extract_assets(bool external);
+		bool extract_one_asset(const std::string& name, bool external);
 
 	private:
 		app_runenv(app_runenv&&) = delete;
