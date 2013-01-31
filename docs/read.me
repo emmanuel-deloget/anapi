@@ -140,10 +140,21 @@ List of supported features:
   gles2: set of class to insulate the programmer from the OpenGL ES 2.0
          API. Using these classes, you should make most of you glXXX
          function calls go away.
-  lodepng: a PNG reading/writing library.
+  lodepng: a PNG reading/writing library. This library is compiled 
+         without the PNG write support. To enable write support, you
+         can use the ANAPI_LODEPNG_FEATURE variable in your Android.mk 
+         before the inclusion of Anapi.mk. This variable contains a list
+         of features:
+           encoder: include the PNG encoder
+           disk: include the possibility to read/write data from a
+             named file
+           errors: include the error text in the library 
 
 ========================================================================
 Latest news
+
+  Version 0.2.0 - lodepng, OpenGL ES 2 basic support, asset manager
+                - and a few bug fix. 
 
   Version 0.1.0 - initial release
 
@@ -153,8 +164,9 @@ Known issues
 * It's not yet possible to play with the saved instance state. This
   feature is on the road map.
 
-* anapi++ has yet to be tested on a real device. It has been tested
-  in the Android emulator and seems to work fine.
+* anapi++ has been tested on the emulator and on an ODROID U2 board.
+  More test (on other hardware) is needed to ensure the library works
+  as intended. 
 
 * Most of the code has been written during a short week-end, in a hurry
   (in fact, the goal was to provide some support for a blog article).
@@ -164,7 +176,7 @@ Known issues
   enhance the implementation in order to use more powerfull C++11
   features.
 
-* JNI calls are not supported yet. This feature is on the road map.
+* JNI calls are supported but are not yet implemented. 
 
 * event objects are lacking a lot of features. They will be added later.
 
