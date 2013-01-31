@@ -1,0 +1,8 @@
+This directory contains source code that comes from other projects.
+None of this source code is maintained by the anapi++ maintainer(s), 
+although they might be able to help if you have any kind of issue. 
+
+We tried to ensure that all the external components have licensing
+terms that does not contradict the anapi++ library licensing terms.
+
+In any case, consult you legal department or a lawyer.
