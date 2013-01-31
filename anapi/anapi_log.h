@@ -32,9 +32,14 @@
 
 #include <android/log.h>
 
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "anapi++", __VA_ARGS__))
-#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "anapi++", __VA_ARGS__))
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "anapi++", __VA_ARGS__))
+#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "anapi++", __VA_ARGS__))
+#if !defined(NDEBUG)
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "anapi++", __VA_ARGS__))
 #define LOGV(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, "anapi++", __VA_ARGS__))
+#else
+#define LOGI(...)
+#define LOGV(...)
+#endif
 
 #endif // anapi_log_h_included
