@@ -27,6 +27,7 @@
 //
 // *********************************************************************
 
+#include <vector>
 #include <stdexcept>
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
@@ -86,6 +87,81 @@ namespace anapi
 	asset asset_manager::make_asset() const
 	{
 		return asset(m_jni, m_am);
+	}
+
+	asset_dir asset_manager::make_asset_dir() const
+	{
+		return asset_dir(m_jni, m_am);
+	}
+
+	// ================= CLASS anapi::asset_sir
+
+	asset_dir::asset_dir()
+	: m_jni(NULL)
+	, m_am(NULL)
+	, m_dir(NULL)
+	{ }
+
+	asset_dir::~asset_dir()
+	{ close(); }
+
+	asset_dir::asset_dir(asset_dir&& other)
+	: m_jni(other.m_jni)
+	, m_am(other.m_am)
+	, m_dir(other.m_dir)
+	{
+		other.m_jni = NULL;
+		other.m_am = NULL;
+		other.m_dir = NULL;
+	}
+
+	asset_dir& asset_dir::operator=(asset_dir&& other)
+	{
+		m_jni = other.m_jni;
+		m_am = other.m_am;
+		m_dir = other.m_dir;
+		other.m_jni = NULL;
+		other.m_am = NULL;
+		other.m_dir = NULL;
+		return *this;
+	}
+
+	asset_dir::asset_dir(JNIEnv *jni, AAssetManager *am)
+	: m_jni(jni)
+	, m_am(am)
+	, m_dir(NULL)
+	{ }
+
+	bool asset_dir::open(const std::string& dirname)
+	{
+		m_dir = AAssetManager_openDir(m_am, dirname.c_str());
+		if (!m_dir)
+			return false;
+		return true;
+	}
+
+	void asset_dir::close()
+	{
+		if (m_dir)
+			AAssetDir_close(m_dir);
+	}
+
+	void asset_dir::rewind() const
+	{
+		if (m_dir)
+			AAssetDir_rewind(m_dir);
+	}
+
+	// empty file names do not exist, so hitting .empty() == true
+	// means we found all the files.
+	std::string asset_dir::get_next_file() const
+	{
+		if (m_dir) {
+			const char *f = AAssetDir_getNextFileName(m_dir);
+			if (f)
+				return std::string(f);
+		}
+		return std::string();
 	}
 
 	// ================= CLASS anapi::asset
@@ -175,6 +251,28 @@ namespace anapi
 		}
 		if (lseek(m_desc.fd, real_offset, real_whence) < 0)
 			return false;
+		return true;
+	}
+
+	bool asset::copy_to(const std::string& out)
+	{
+		if (m_desc.fd < 0)
+			return false;
+
+		seek(0, seek_position::from_start);
+		std::vector<unsigned char> content(m_desc.length);
+		if (read(&content.front(), content.size()) != (ssize_t)content.size()) {
+			LOGE("failed to read the source file\n");
+			return false;
+		}
+
+		int fd = ::open(out.c_str(), O_WRONLY|O_TRUNC|O_CREAT, 0644);
+		if (fd < 0) {
+			LOGE("failed to open the destination file [%s]\n", out.c_str());
+			return false;
+		}
+		::write(fd, &content.front(), content.size());
+		::close(fd);
 		return true;
 	}
 }

@@ -30,6 +30,7 @@
 #ifndef anapi_asset_manager_h_included
 #define anapi_asset_manager_h_included
 
+#include <string>
 #include <android/native_activity.h>
 #include <android/asset_manager.h>
 
@@ -69,10 +70,35 @@ namespace anapi
 		ssize_t read(void *p, size_t length) const;
 
 		bool seek(off_t offset, const seek_position& whence = seek_position::from_start) const;
+		bool copy_to(const std::string& out);
 
 	private:
 		asset(const asset& other) = delete;
 		asset& operator=(const asset& other) = delete;
+	};
+
+	class asset_dir
+	{
+	private:
+		JNIEnv *m_jni;
+		AAssetManager *m_am;
+		AAssetDir *m_dir;
+
+		friend class asset_manager;
+
+		asset_dir(JNIEnv *jni, AAssetManager *am);
+		void close();
+
+	public:
+		asset_dir();
+		~asset_dir();
+
+		bool open(const std::string& dirname);
+		void rewind() const;
+		std::string get_next_file() const;
+
+		asset_dir(asset_dir&& other);
+		asset_dir& operator=(asset_dir&& other);
 	};
 
 	class asset_manager
@@ -92,6 +118,7 @@ namespace anapi
 		asset_manager& operator=(asset_manager&&);
 
 		asset make_asset() const;
+		asset_dir make_asset_dir() const;
 	};
 
 }
