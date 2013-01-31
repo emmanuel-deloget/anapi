@@ -27,9 +27,9 @@
 #
 # *********************************************************************
 
-host_executables: opak
+host_executables: $(LOCAL_PATH)/opak
 
-opak: $(ANAPI_PATH)/host-tools/opak.c
+$(LOCAL_PATH)/opak: $(ANAPI_PATH)/host-tools/opak.c
 	@ echo "Compile++ host   : $(@F) <= $(<F)"
 	@ $(CC) -O2 -o $@ $<
 	@ echo "HostExecutable : $(@F)"
