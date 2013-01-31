@@ -34,7 +34,20 @@ ANAPI_ADDITIONAL_LDFLAGS := -u ANativeActivity_onCreate
 ANAPI_ADDITIONAL_LDLIBS := -llog -landroid
 ANAPI_ADDITIONAL_CPP_FEATURES := exceptions rtti
 
+# Build up our CFLAGS. We need to do this now in order to
+# have consistent CFLAGS used through the compilation of
+# the complete anapi++ library.
 ANAPI_ADDITIONAL_CFLAGS += -I $(ANAPI_PATH)
+
+ifneq ($(filter encoder,$(ANAPI_LODEPNG_FEATURES)),encoder)
+ANAPI_ADDITIONAL_CFLAGS += -DLODEPNG_NO_COMPILE_ENCODER
+endif
+ifneq ($(filter disk,$(ANAPI_LODEPNG_FEATURES)),disk)
+ANAPI_ADDITIONAL_CFLAGS += -DLODEPNG_NO_COMPILE_DISK
+endif
+ifneq ($(filter errors,$(ANAPI_LODEPNG_FEATURES)),errors)
+ANAPI_ADDITIONAL_CFLAGS += -DLODEPNG_NO_COMPILE_ERROR_TEXT
+endif
 
 ANAPI_STATIC_LIBRARIES :=
 
