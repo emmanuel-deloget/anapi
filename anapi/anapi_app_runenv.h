@@ -79,6 +79,7 @@ namespace anapi
 
 		bool extract_assets(bool external);
 		bool extract_one_asset(const std::string& name, bool external);
+		bool enter_internal_data_path() const;
 
 	private:
 		app_runenv(app_runenv&&) = delete;

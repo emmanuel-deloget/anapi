@@ -29,6 +29,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <unistd.h>
 #include "anapi_app_runenv.h"
 #include "anapi_log.h"
 
@@ -79,6 +80,11 @@ namespace anapi
 			LOGE("%s:%d> exception caught while extracting assets: %s\n", __FILE__, __LINE__, e.what());
 		}
 		return false;
+	}
+
+	bool app_runenv::enter_internal_data_path() const
+	{
+		return chdir(m_activity->internalDataPath) == 0 ? true : false;
 	}
 
 }
