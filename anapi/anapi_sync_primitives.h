@@ -94,7 +94,7 @@ namespace anapi
 		~condition()
 		{ pthread_cond_destroy(&m_cond); }
 
-		void wait_set()
+		void wait_up()
 		{
 			scoped_lock lock(m_mutex);
 			while (!m_value) {
@@ -102,7 +102,7 @@ namespace anapi
 			}
 		}
 
-		void wait_set_and_reset()
+		void wait_up_down()
 		{
 			scoped_lock lock(m_mutex);
 			while (!m_value) {
@@ -111,7 +111,7 @@ namespace anapi
 			m_value = false;
 		}
 
-		void wait_unset()
+		void wait_down()
 		{
 			scoped_lock lock(m_mutex);
 			while (m_value) {
@@ -119,14 +119,14 @@ namespace anapi
 			}
 		}
 
-		void set()
+		void up()
 		{
 			scoped_lock lock(m_mutex);
 			m_value = true;
 			pthread_cond_broadcast(&m_cond);
 		}
 
-		void reset()
+		void down()
 		{
 			scoped_lock lock(m_mutex);
 			m_value = false;
@@ -139,7 +139,7 @@ namespace anapi
 			return m_value;
 		}
 
-		bool get() const
+		bool state() const
 		{
 			scoped_lock lock(m_mutex);
 			return m_value;

@@ -263,7 +263,7 @@ namespace anapi
 		default:
 			break;
 		}
-		m_syncevent.set();
+		m_syncevent.up();
 		return h ? event_result::handled : event_result::unhandled;
 	}
 

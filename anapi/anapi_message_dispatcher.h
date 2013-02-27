@@ -141,7 +141,7 @@ namespace anapi
 				return;
 			}
 			details::send_events(m_writefd, se, args...);
-			m_syncevent.wait_set_and_reset();
+			m_syncevent.wait_up_down();
 		}
 	};
 

@@ -197,12 +197,12 @@ namespace anapi
 
 	void native_activity::started()
 	{
-		m_started.set();
+		m_started.up();
 	}
 
 	void native_activity::wait_started()
 	{
-		m_started.wait_set();
+		m_started.wait_up();
 	}
 
 	event_result native_activity::dispatch_message(app& the_app)
