@@ -171,7 +171,7 @@ namespace anapi
 				return event_result::unhandled;
 			if (AInputQueue_preDispatchEvent(m_iqueue, ie))
 				return event_result::handled;
-			event_result result;
+			event_result result = event_result::unhandled;
 			if (is_key_message(ie)) {
 				result = fire_on_key(the_app, ie);
 			} else if (is_motion_message(ie)) {
